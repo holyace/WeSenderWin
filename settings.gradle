@@ -2,3 +2,4 @@ rootProject.name = 'WeSenderWin'
 
 include ':common_socket'
 include ':common'
+include ':common_dto'

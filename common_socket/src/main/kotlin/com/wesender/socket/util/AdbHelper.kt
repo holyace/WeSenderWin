@@ -3,12 +3,13 @@ package com.wesender.socket.util
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.wesender.common.log.Logger
+import com.wesender.socket.Const
 import java.io.File
 import java.lang.IllegalStateException
 
 object AdbHelper {
 
-    private val TAG = "AdbHelper"
+    private const val TAG = "AdbHelper"
 
     private var mAdb: AndroidDebugBridge? = null
 
@@ -29,7 +30,7 @@ object AdbHelper {
         while (count < 100 && !mAdb!!.hasInitialDeviceList()) {
             count++
             try {
-                Logger.i(TAG, "wait for adb connect...")
+                Logger.i(Const.MODULE, TAG, "wait for adb connect...")
                 Thread.sleep(100)
             } catch (e: Exception) {
                 e.printStackTrace()

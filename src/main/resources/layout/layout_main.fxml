@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wesender.win.controller.MainController">
+    <Button fx:id="btnRefresh" layoutX="200.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#clickRefresh"
+            text="刷新"/>
+    <Label fx:id="labelStatus" layoutY="580.0" prefHeight="20.0" prefWidth="800.0" style="-fx-padding: 0 5 0 5;"
+           text="就绪">
+        <cursor>
+            <Cursor fx:constant="NONE"/>
+        </cursor>
+    </Label>
+    <ChoiceBox fx:id="devicesList" disable="true" layoutX="70.0" layoutY="10.0" prefHeight="23.0" prefWidth="120.0"/>
+    <Label layoutX="14.0" layoutY="14.0" text="选择设备"/>
+    <TreeView fx:id="fileTreeView" layoutX="14.0" layoutY="42.0" prefHeight="527.0" prefWidth="394.0"/>
+    <TextArea fx:id="message" editable="false" layoutX="428.0" layoutY="42.0" prefHeight="527.0" prefWidth="355.0">
+        <opaqueInsets>
+            <Insets bottom="5.0" left="5.0" right="5.0"/>
+        </opaqueInsets>
+    </TextArea>
+    <Button fx:id="btnSend" disable="true" layoutX="251.0" layoutY="10.0" mnemonicParsing="false" text="发送"/>
+</AnchorPane>
