@@ -1,15 +1,18 @@
 package com.wesender.socket
 
+import com.android.ddmlib.IDevice
 import com.wesender.common.log.Logger
 import com.wesender.common.transfer.ChannelReader
 import com.wesender.common.transfer.ChannelWriter
 import com.wesender.common.transfer.SocketDTO
+import com.wesender.socket.constants.Const
+import com.wesender.socket.handler.SelectorEventHandler
 import com.wesender.socket.util.AdbHelper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.*
 import java.net.InetSocketAddress
-import java.net.Socket
 import java.nio.channels.SelectionKey
-import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 
 open class AdbDevice(private val pcLocalPort: Int,
@@ -27,6 +30,8 @@ open class AdbDevice(private val pcLocalPort: Int,
     private val mWriter = ChannelWriter()
     private val mReader = ChannelReader()
 
+    private var mDevice: IDevice? = null
+
     private var mConnected = false
     private var mReadable = false
     private var mWriteable = false
@@ -36,7 +41,6 @@ open class AdbDevice(private val pcLocalPort: Int,
         if (mSocketChannel != null && mSocketChannel!!.isConnected) {
             return true
         }
-
         val devices = AdbHelper.getDevices()
         if (devices.isNullOrEmpty()) {
             Logger.e(Const.MODULE, TAG, "no devices connect to this pc")
@@ -48,7 +52,9 @@ open class AdbDevice(private val pcLocalPort: Int,
             return false
         }
 
-        devices[deviceIndex].createForward(pcLocalPort, phonePort)
+        mDevice = devices[deviceIndex]
+
+        mDevice?.createForward(pcLocalPort, phonePort)
 
         if (mThread == null) {
             mThread = SocketThread("socket-listen-thread", this)
@@ -56,9 +62,17 @@ open class AdbDevice(private val pcLocalPort: Int,
         }
 
         mSocketChannel = SocketChannel.open()
-        mSocketChannel?.bind(InetSocketAddress("localhost", pcLocalPort))
+        mSocketChannel?.configureBlocking(false)
 
         mThread?.listen(mSocketChannel!!, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
+
+        GlobalScope.launch {
+            try {
+                mSocketChannel?.connect(InetSocketAddress("localhost", pcLocalPort))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         return true
     }
@@ -82,9 +96,15 @@ open class AdbDevice(private val pcLocalPort: Int,
     }
 
     fun disconnect() {
-        if (!checkState()) {
-            return
+//        if (!checkState()) {
+//            return
+//        }
+        try {
+            mDevice?.removeForward(pcLocalPort, phonePort)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        mSocketChannel?.close()
         mThread?.stopListen()
     }
 
@@ -108,4 +128,6 @@ open class AdbDevice(private val pcLocalPort: Int,
         super.onWriteable(selectionKey)
         mWriteable = true
     }
+
+    fun isDeviceReady(): Boolean = checkState()
 }

@@ -3,7 +3,7 @@ package com.wesender.socket.util
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.wesender.common.log.Logger
-import com.wesender.socket.Const
+import com.wesender.socket.constants.Const
 import java.io.File
 import java.lang.IllegalStateException
 

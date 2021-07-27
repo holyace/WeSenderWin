@@ -1,12 +1,14 @@
 package com.wesender.socket
 
+import com.wesender.socket.handler.SelectorEventHandler
 import java.lang.Exception
 import java.nio.channels.SelectableChannel
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 
 class SocketThread(name: String,
-                   private val eventHandler: SelectorEventHandler): Thread(name) {
+                   private val eventHandler: SelectorEventHandler
+): Thread(name) {
 
     private val mSelector: Selector = Selector.open()
 
@@ -21,6 +23,7 @@ class SocketThread(name: String,
 
     fun stopListen() {
         mListening = false
+        mSelector.close()
     }
 
     override fun run() {

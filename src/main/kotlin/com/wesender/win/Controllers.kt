@@ -1,13 +1,14 @@
 package com.wesender.win
 
+import com.wesender.win.controller.BaseController
 import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 object Controllers {
 
-    private val mControllers by lazy { mutableMapOf<KClass<*>, WeakReference<*>>() }
+    private val mControllers by lazy { mutableMapOf<KClass<*>, WeakReference<out BaseController>>() }
 
-    fun put(controller: Any) {
+    fun put(controller: BaseController) {
         val key = getKey(controller)
         val ref = mControllers[key]
         if (ref?.get() == null) {
@@ -28,6 +29,11 @@ object Controllers {
     }
 
     fun clear() {
+        mControllers.forEach { (_, controller) ->
+            if (controller.get() != null) {
+                controller.get()!!.onExit()
+            }
+        }
         mControllers.clear()
     }
 

@@ -23,5 +23,5 @@
             <Insets bottom="5.0" left="5.0" right="5.0"/>
         </opaqueInsets>
     </TextArea>
-    <Button fx:id="btnSend" disable="true" layoutX="251.0" layoutY="10.0" mnemonicParsing="false" text="发送"/>
+    <Button fx:id="btnSend" disable="true" layoutX="251.0" layoutY="10.0" mnemonicParsing="false" text="发送" onMouseClicked="#clickSend"/>
 </AnchorPane>

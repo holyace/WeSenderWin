@@ -21,11 +21,13 @@ class SocketDTO internal constructor() {
             }
         }
 
-        fun of(data: ByteArray): SocketDTO {
+        fun of(data: ByteArray, offset: Int = 0, length: Int = data.size): SocketDTO {
             return SocketDTO().apply {
                 mType = TYPE_BINARY
-                mData = data
-                mSize = data.size
+                val dataOfCopy = ByteArray(length)
+                System.arraycopy(data, offset, dataOfCopy, 0, length)
+                mData = dataOfCopy
+                mSize = length
             }
         }
 

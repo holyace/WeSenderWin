@@ -7,6 +7,8 @@ object Global {
 
     private val root = "file:/${System.getProperty("user.dir")}"
     private val layout = root + File.separator + "layout"
+    const val localPort = 8025
+    const val phonePort = 8999
 
     private val classLoader = Thread.currentThread().contextClassLoader
 

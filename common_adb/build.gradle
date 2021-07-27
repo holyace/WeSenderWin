@@ -20,6 +20,8 @@ compileTestKotlin {
 dependencies {
     api fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation deps.kotlin.coroutines
+    implementation deps.kotlin.coroutines_android
     implementation project(':common')
     implementation project(':common_transfer')
 }

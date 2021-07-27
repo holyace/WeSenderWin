@@ -1,4 +1,4 @@
-package com.wesender.socket
+package com.wesender.socket.constants
 
 class Const {
 
