@@ -1,15 +1,10 @@
 package com.wesender.win
 
-import com.wesender.common.log.Logger
-import com.wesender.socket.Const
 import com.wesender.socket.util.AdbHelper
-import com.wesender.win.widget.FileTreeItem
 import javafx.application.Application
-import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
-import javafx.scene.control.TreeItem
 import javafx.scene.image.Image
 import javafx.scene.layout.Pane
 import javafx.stage.Stage

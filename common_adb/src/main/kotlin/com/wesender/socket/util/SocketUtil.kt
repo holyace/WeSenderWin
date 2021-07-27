@@ -1,4 +1,4 @@
-package com.wesender.util
+package com.wesender.socket.util
 
 import com.wesender.common.log.Logger
 

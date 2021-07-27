@@ -32,9 +32,9 @@ javafx {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation project(':common_socket')
+    implementation project(':common_adb')
     implementation project(':common')
-    implementation project(':common_dto')
+    implementation project(':common_transfer')
 
     implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutines_android

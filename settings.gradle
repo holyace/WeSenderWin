@@ -1,5 +1,5 @@
 rootProject.name = 'WeSenderWin'
 
-include ':common_socket'
+include ':common_adb'
 include ':common'
-include ':common_dto'
+include ':common_transfer'
