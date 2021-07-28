@@ -1,5 +1,8 @@
 package com.wesender.socket
 
+import com.wesender.common.log.Logger
+import com.wesender.common.transfer.ext.hexHash
+import com.wesender.socket.constants.Const
 import com.wesender.socket.handler.SelectorEventHandler
 import java.lang.Exception
 import java.nio.channels.SelectableChannel
@@ -10,6 +13,10 @@ class SocketThread(name: String,
                    private val eventHandler: SelectorEventHandler
 ): Thread(name) {
 
+    companion object {
+        private const val TAG = "SocketThread"
+    }
+
     private val mSelector: Selector = Selector.open()
 
     @Volatile
@@ -19,6 +26,8 @@ class SocketThread(name: String,
         if (channel.isRegistered) return
         channel.configureBlocking(false)
         channel.register(mSelector, op)
+        Logger.i(Const.MODULE, TAG, "listen channel: ${channel.hexHash()}, op: $op")
+        mSelector.wakeup()
     }
 
     fun stopListen() {
@@ -29,10 +38,15 @@ class SocketThread(name: String,
     override fun run() {
         super.run()
 
+        Logger.i(Const.MODULE, TAG, "start listen in loop")
+
         while (mListening) {
 
             val readyCount = mSelector.select()
-            if (readyCount <= 0) continue
+            if (readyCount <= 0) {
+//                Logger.i(Const.MODULE, TAG, "readyCount = 0")
+                continue
+            }
 
             mSelector.selectedKeys().forEach {
                 when {
@@ -46,6 +60,8 @@ class SocketThread(name: String,
                 }
             }
         }
+
+        Logger.i(Const.MODULE, TAG, "thread $name stop")
     }
 
     private fun onAcceptable(selectionKey: SelectionKey) {

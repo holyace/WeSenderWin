@@ -32,15 +32,15 @@ open class AdbDevice(private val pcLocalPort: Int,
 
     private var mDevice: IDevice? = null
 
+    private var mWaiting = false
     private var mConnected = false
     private var mReadable = false
     private var mWriteable = false
 
     fun connectDevice(deviceIndex: Int = 0): Boolean {
 
-        if (mSocketChannel != null && mSocketChannel!!.isConnected) {
-            return true
-        }
+        if (mWaiting || checkState()) return true
+
         val devices = AdbHelper.getDevices()
         if (devices.isNullOrEmpty()) {
             Logger.e(Const.MODULE, TAG, "no devices connect to this pc")
@@ -64,6 +64,7 @@ open class AdbDevice(private val pcLocalPort: Int,
         mSocketChannel = SocketChannel.open()
         mSocketChannel?.configureBlocking(false)
 
+        mWaiting = true
         mThread?.listen(mSocketChannel!!, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
 
         GlobalScope.launch {
@@ -109,14 +110,20 @@ open class AdbDevice(private val pcLocalPort: Int,
     }
 
     private fun checkState(): Boolean {
-        return mSocketChannel != null && mConnected && mReadable && mWriteable
+        return mSocketChannel != null && mConnected
     }
 
     override fun onConnect(selectionKey: SelectionKey) {
         super.onConnect(selectionKey)
+        mWaiting = false
         val channel = selectionKey.channel() as SocketChannel
-        channel.finishConnect()
-        mConnected = true
+        mConnected = try {
+            channel.finishConnect()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+        Logger.i(Const.MODULE, TAG, "onConnect $mConnected")
     }
 
     override fun onReadable(selectionKey: SelectionKey) {

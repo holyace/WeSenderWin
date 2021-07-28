@@ -112,6 +112,9 @@ class MainController: BaseController() {
         if (!mAdbDevice.isDeviceReady()) {
             showMsg("等待设备响应...", true)
         }
+        else {
+            showMsg("设备已就绪", true)
+        }
     }
 
     fun clickSend(mouseEvent: MouseEvent) {
