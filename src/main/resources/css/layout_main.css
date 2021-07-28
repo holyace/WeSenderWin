@@ -1,0 +1,9 @@
+*:focused {
+    outline: none;
+    box-shadow: none;
+}
+
+.text-area:focused {
+    outline: none;
+    box-shadow: none;
+}

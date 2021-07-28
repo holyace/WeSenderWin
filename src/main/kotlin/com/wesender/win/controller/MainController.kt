@@ -9,7 +9,10 @@ import com.wesender.win.Global
 import com.wesender.win.widget.FileTreeItem
 import javafx.application.Platform
 import javafx.collections.FXCollections
+import javafx.event.EventType
 import javafx.scene.control.*
+import javafx.scene.input.Clipboard
+import javafx.scene.input.ClipboardContent
 import javafx.scene.input.MouseEvent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,6 +24,14 @@ class MainController: BaseController() {
 
     companion object {
         private const val TAG = "MainController"
+
+        fun copyToClipboard(text: String) {
+            Clipboard.getSystemClipboard().setContent(
+                ClipboardContent().apply {
+                    putString(text)
+                }
+            )
+        }
     }
 
     lateinit var btnRefresh: Button
@@ -39,6 +50,34 @@ class MainController: BaseController() {
     }
 
     private fun init() {
+        val cortexMenu = ContextMenu().apply {
+            val selectAll = MenuItem("全选").apply {
+                addEventHandler(EventType.ROOT) {
+                    message.selectAll()
+                }
+            }
+            items.add(selectAll)
+
+            val copy = MenuItem("复制").apply {
+                addEventHandler(EventType.ROOT) {
+                    val text = message.selectedText
+                    if (text.isNullOrBlank()) {
+                        return@addEventHandler
+                    }
+                    copyToClipboard(text)
+                }
+            }
+            items.add(copy)
+
+            val item = MenuItem("清除").apply {
+                addEventHandler(EventType.ROOT) {
+                    message.text = ""
+                }
+            }
+            items.add(item)
+        }
+        message.contextMenu = cortexMenu
+
         labelStatus.text = "开始检测设备..."
         devicesList.selectionModel.selectedItemProperty().addListener lis@ { _, _, newValue ->
             Logger.i(Const.MODULE, TAG, "select device: %s", newValue)
