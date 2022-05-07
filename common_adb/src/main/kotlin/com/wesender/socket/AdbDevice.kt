@@ -8,6 +8,7 @@ import com.wesender.common.transfer.SocketDTO
 import com.wesender.socket.constants.Const
 import com.wesender.socket.handler.SelectorEventHandler
 import com.wesender.socket.util.AdbHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.*
@@ -67,11 +68,11 @@ open class AdbDevice(private val pcLocalPort: Int,
         mWaiting = true
         mThread?.listen(mSocketChannel!!, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 mSocketChannel?.connect(InetSocketAddress("localhost", pcLocalPort))
             } catch (e: Exception) {
-                e.printStackTrace()
+                Logger.w(Const.MODULE, TAG, "connect devices error: %s", e.message)
             }
         }
 
@@ -103,7 +104,7 @@ open class AdbDevice(private val pcLocalPort: Int,
         try {
             mDevice?.removeForward(pcLocalPort, phonePort)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logger.w(Const.MODULE, TAG, "removeForward error: %s", e.message)
         }
         mSocketChannel?.close()
         mThread?.stopListen()

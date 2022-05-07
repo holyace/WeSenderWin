@@ -42,7 +42,10 @@ object Logger {
     }
 
     private fun getLog(level: Level, module: String, tag: String, log: String): String {
-        return "\u001B[%sm%s %s/%s.%s: %s\u001B[0m".format(level.color, time, level.tag, module, tag, log)
+        return when (level) {
+            Level.INFO, Level.DEBUG -> "\u001B[m%s %s/%s.%s: %s\u001B[0m".format(time, level.tag, module, tag, log)
+            else -> "\u001B[%sm%s %s/%s.%s: %s\u001B[0m".format(level.color, time, level.tag, module, tag, log)
+        }
     }
 
     private fun getStackTrace(e: Throwable): String {

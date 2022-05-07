@@ -14,6 +14,7 @@ import javafx.scene.control.*
 import javafx.scene.input.Clipboard
 import javafx.scene.input.ClipboardContent
 import javafx.scene.input.MouseEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -119,7 +120,7 @@ class MainController: BaseController() {
 
     fun clickSend(mouseEvent: MouseEvent) {
         Logger.i(Const.MODULE, TAG, "clickSend")
-        GlobalScope.launch block@ {
+        GlobalScope.launch(Dispatchers.IO) block@ {
             try {
                 if (selectedFile == null || !selectedFile!!.exists()) {
                     showMsg("请先选择要发送的文件")

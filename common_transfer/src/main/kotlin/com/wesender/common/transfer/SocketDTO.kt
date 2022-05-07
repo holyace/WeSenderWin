@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 class SocketDTO internal constructor() {
 
     companion object {
-        const val BUFFER_SIZE = 10
+        const val BUFFER_SIZE = 1024
 
         const val TYPE_UNKNOWN = 0
         const val TYPE_STRING = 1
@@ -31,7 +31,7 @@ class SocketDTO internal constructor() {
             }
         }
 
-        fun of(any: Any, charset: Charset = Charsets.UTF_8): SocketDTO {
+        fun of(any: java.io.Serializable, charset: Charset = Charsets.UTF_8): SocketDTO {
             val json = JSONObject(any).toString()
             return SocketDTO().apply {
                 mData = json.toByteArray(charset)

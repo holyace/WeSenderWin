@@ -1,6 +1,8 @@
 package com.wesender.socket
 
+import com.wesender.common.log.Logger
 import com.wesender.common.transfer.SocketDTO
+import com.wesender.socket.constants.Const
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
@@ -21,6 +23,14 @@ class AdbDataTransfer(localPort: Int, phonePort: Int): AdbDevice(localPort, phon
 
         val dto = SocketDTO.of(byteArray, 0, read)
 
-        send(dto)
+        try {
+            send(dto)
+        } catch (e: Exception) {
+            Logger.w(Const.MODULE, TAG, "send file error, file: %s, error: %s", file, e.message)
+        }
+    }
+
+    companion object {
+        private const val TAG = "AdbDataTransfer"
     }
 }
